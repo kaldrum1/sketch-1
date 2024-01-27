@@ -1,0 +1,119 @@
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Noto+Serif+SC&display=swap");
+  
+  body {
+    background-color: #0082c8;
+    color: #ffffff;
+    font-size: 30px;
+    line-height: 30px;
+    word-wrap: anywhere;
+    font-family: "Noto Serif SC";
+    text-align: center;
+  }
+  .head{
+    font-size: 32px;
+  }
+</style>
+
+<body>
+  <div class="head">
+    Click to Remove Squares!<br><br>
+    </div>
+  <div id="text">
+    </div>
+</body>
+
+<script>
+  const div = document.getElementById("text")
+  let tenPrint = []
+  function makesSquare(list, index, length){
+    const skip = length + 1
+    if (list[index] === '／'){
+    //down
+      if (index + skip + 1 <= list.length){
+        if (list[index + 1] === '＼'){
+          if ((list[index + skip] === '＼') && (list[index + skip + 1] === '／')){
+            return true
+          }
+        }
+  
+      } 
+    //up
+      if (index - skip - 1 >= 0){
+        if (list[index - 1] === '＼'){
+          if ((list[index - skip] === '＼') && (list[index - (skip + 1)] === '／')){
+            return true
+          }
+        }
+      }
+    }
+    if (list[index] === '＼'){
+    //down
+      if (index + skip <= list.length){
+        if (list[index - 1] === '／'){
+          if ((list[index + skip] === '／') && (list[index + skip - 1] === '＼')){
+            return true
+          }
+        }
+      } 
+    //up
+      if (index - skip >= 0){
+        if (list[index + 1] === '／'){
+          if ((list[index - skip] === '／') && (list[index - skip + 1] === '＼')){
+            return true
+          }
+        }
+      }
+    }
+    return false
+  }
+  
+  let lineLength = Math.floor(window.innerWidth/31.5)
+  
+  function generate(){
+    let lines = Math.floor(window.innerHeight/31) - 2
+    tenPrint = []
+    const chars = ['／', '＼']
+    for(let i = 0; i < lines; i++){
+      for(let j = 0; j < lineLength; j++){
+        const rand = Math.floor(Math.random()*2)
+        tenPrint.push(chars[rand])
+      }
+      tenPrint.push("<br>")
+    }
+    
+    div.innerHTML = tenPrint.join("")
+  }
+  
+  function resizeGrid(){
+    const newLength = Math.floor(window.innerWidth/31.5)
+    if (newLength !== lineLength){
+      lineLength = newLength
+      generate()
+    }
+  }
+  
+  function noSquares(){
+    const listNums = Array.from(tenPrint.keys())
+    for(let i = 0; i < listNums.length; i = Math.floor(Math.random()*listNums.length)){
+      const j = listNums[i]
+      const square = makesSquare(tenPrint, j, lineLength)
+      if (square){
+        if(tenPrint[j] === '／'){
+          tenPrint[j] = '＼'
+        }else if (tenPrint[j] === '＼'){
+          tenPrint[j] = '／'
+        }
+      }
+      listNums.splice(i, 1)
+    }
+    div.innerHTML = tenPrint.join("")
+  }
+  
+  generate()
+  
+  addEventListener('resize', resizeGrid)
+  addEventListener('mouseup', noSquares)
+  
+  
+</script>
